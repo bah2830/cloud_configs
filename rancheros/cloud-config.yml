@@ -17,7 +17,8 @@ rancher:
     node-exporter:
       image: prom/node-exporter
       command: "--path.rootfs=/host"
-      network_mode: host
+      ports:
+        - "9100:9100"
       pid: host
       volumes:
         - "/:/host:ro,rslave"
