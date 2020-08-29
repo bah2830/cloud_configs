@@ -3,13 +3,35 @@
 hostname: server1
 
 ssh_authorized_keys:
-    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDt1o7JTlITqYBVn9Jb09834pSvucPhj16N6xRTFKll/hZPQedypVc1+xlr3LeZWqu/8scTpIhkdptxILk0XnZcX5NL1pM9vq5atyW0PNEnJNUZE3GKcpzequPJ72Psks3g4//LMy4sn1IopkiHoOxukbOafIK2Ih9eVA4SyXZ5e1+i1EJrP02e1m8uM3sYcPqx/W0qawcIpRCRlQ0lY/GxHd6gRPoPnLcmAbinuGaMqzl2TWAYSFJwhzqq0oBwClwRrRavlVhCbBjrsxh89jfZUyDERrJyuvkRqxO5XfBGoPnldr/9pvbOVv/4Y8foUvT6Bvtkw2I2g0GirUFU0Rj5 work-laptop
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDt1o7JTlITqYBVn9Jb09834pSvucPhj16N6xRTFKll/hZPQedypVc1+xlr3LeZWqu/8scTpIhkdptxILk0XnZcX5NL1pM9vq5atyW0PNEnJNUZE3GKcpzequPJ72Psks3g4//LMy4sn1IopkiHoOxukbOafIK2Ih9eVA4SyXZ5e1+i1EJrP02e1m8uM3sYcPqx/W0qawcIpRCRlQ0lY/GxHd6gRPoPnLcmAbinuGaMqzl2TWAYSFJwhzqq0oBwClwRrRavlVhCbBjrsxh89jfZUyDERrJyuvkRqxO5XfBGoPnldr/9pvbOVv/4Y8foUvT6Bvtkw2I2g0GirUFU0Rj5 work-laptop
 
 rancher:
-    network:
-        interfaces:
-            eth0:
-                address: 192.168.1.11/24
-                gateway: 192.168.1.1
-                dhcp: false
+  network:
+    interfaces:
+      eth0:
+        address: 192.168.1.11/24
+        gateway: 192.168.1.1
+        dhcp: false
 
+  services:
+    node-exporter:
+      image: prom/node-exporter
+      command: "--path.rootfs=/host"
+      network_mode: host
+      pid: host
+      volumes:
+        - "/:/host:ro,rslave"
+
+    cadvisor:
+      image: gcr.io/cadvisor/cadvisor:v0.36.0
+      privileged: true
+      devices:
+        - "/dev/kmsg"
+      ports:
+        - "8100:8080"
+      volumes:
+        - "/:/rootfs:ro"
+        - "/var/run:/var/run:ro"
+        - "/sys:/sys:ro"
+        - "/var/lib/docker/:/var/lib/docker:ro"
+        - "/dev/disk/:/dev/disk:ro"
