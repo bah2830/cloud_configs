@@ -1,5 +1,15 @@
 #cloud-config
 
+hostname: server1
+
 ssh_authorized_keys:
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCnx359VlgegAjivobx1XNFa6VTbnOrEsH1Ce5zdROEphfZ6yUDH5kdeQeeBhljd2D9zPTeAUrHzeEC/BtCV+HC0PgG8goGbG1mNRwfrubldOwMTqqoFBFZZ++h+VMI7hfaTmT6K3yVu2LNla7WIrS4D6yHp3UOB58lNWPyydWuwLydWbt9eMepH/m4kr0pJDfAJwsr9Ohsi1QAFFU0tBcHXUWQ8XVtr5pVILvyFYa6MHaS9DyzfZJgyUq5+BojykjuidGi44GSJGYXaiK/0RTCvM6AuIP8m0sg0sIV0VHBQv+VzefiCXw3owPHKnETRr3UW+mOBxfmjSm/VUg45vGlyUAgbQEkJep8wEvSLVdzFkfFxCEocm3QA5WUfG4wdPaAXlL+Wmz4nQ+WTklpBIBWPDUy8czixYP0N8ICCOHaJxhXBmILsQPemSNEznv8CZX7sP0aXPx49W3XV4bHd/tL8G7MKFIyTEZuiO7cMuukGfjGgvPZU+hvs3256Em5ANZ+3JC+q2t9cItkvP/fqbLR6dwXvF5OAa0Ko342th7tjLgio2NsA+nZIm+KAftBWFl72N0Y4vL3HZ/WiqcHZ+CY5iMd8M8AJh5HUAKqFd1Reu+Wxc/z85iSRfxOz1L58JhaQsUCS9M2U66tJefKNqw21ua+dEEYyIf+fyqri2zhYw== work
-  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/PtKnBEmi/06BU2VABQcHijts6BL+OWCj5iesNkPLht9pG0N1mF63GLg9Yz/tGBqkveiIpCaTgLXHB1OVqwpoE7VGthcj3xvfckRX6LguGsScGCHyBxMx81YYIeulkyFHRMUGYBvtRqibdNzsCunS31jhnrDhmHvZbnVOMnWdML+SDnGTySRo7j331daKkpCL40NJCrktsjS2ZPdjkkjn/S6RvgX88cOBh4KtIExT9fcqDAeEhRSGd10WBrC2VitJbqDbzMdf22kSNrO00O9FHZ2ZGWBAceX5rHuQByp9m4fc3XfAM32TOEhMgqrMH2jHxs52XFWCmu0yDdBP6GTv home
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDt1o7JTlITqYBVn9Jb09834pSvucPhj16N6xRTFKll/hZPQedypVc1+xlr3LeZWqu/8scTpIhkdptxILk0XnZcX5NL1pM9vq5atyW0PNEnJNUZE3GKcpzequPJ72Psks3g4//LMy4sn1IopkiHoOxukbOafIK2Ih9eVA4SyXZ5e1+i1EJrP02e1m8uM3sYcPqx/W0qawcIpRCRlQ0lY/GxHd6gRPoPnLcmAbinuGaMqzl2TWAYSFJwhzqq0oBwClwRrRavlVhCbBjrsxh89jfZUyDERrJyuvkRqxO5XfBGoPnldr/9pvbOVv/4Y8foUvT6Bvtkw2I2g0GirUFU0Rj5 work-laptop
+
+rancher:
+    network:
+        interfaces:
+            eth0:
+                address: 192.168.1.11/24
+                gateway: 192.168.1.1
+                dhcp: false
+
