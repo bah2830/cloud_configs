@@ -45,3 +45,6 @@ rancher:
         - "/sys:/sys:ro"
         - "/var/lib/docker/:/var/lib/docker:ro"
         - "/dev/disk/:/dev/disk:ro"
+
+runcmd:
+  - sudo apt-get update && sudo apt-get install -y git smartmontools
