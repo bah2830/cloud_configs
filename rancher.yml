@@ -1,0 +1,62 @@
+#cloud-config
+
+hostname: node{{.HostNumber}}
+
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDGtFXA80CbmqAUY3eOrNiaH6kx0XCuqzPAkNB/JLXypdMKQWodhrt7ogPiCm+8UKYwzP4QnGYBJe8GTPK8yPHoefz+Hpjr7E/LIDMwddQlf47OlIE9i3/3kKUEhnOqn3t4L1wInf5B2YeY4Pk9/2VqwiiLVxQ5pP2EeHBJEyRQR9x1eiFP1/rz/LIygBc58DvMNXypbhs4RABl3xL16LhcN+7/6utrr10zRqj8z0BIO8h1NCaxrsUaymba6AuujtuAM+kt9R6lhgHw7sDobRZFqBCVMvSPZn8VYlC3US6xQBEGyRoym5IMcs1HvMluMXhVvx8Fvaw2lp5Q2POeUNMS9DRChxOotuWf1A+N+2ShrZl1MmvYe50I4rSQMZOWDDFs/Co5hEh0OYk2FLJgnabgK7f85oSgXy079e3uDmLVPf8j7Vbcexho10fN9EAugyDmK8SnkWytWQHBIM5J+Vxp28jPRrzOypFl9gF5wZ0Z6ZKcCmZj89lFlpf9hMPbwf0= bhughes@Brents-Air.brentahughes.local
+
+mounts:
+  - ["192.168.1.20:/mnt/Storage/Data/Internal", "/mnt/internal", "nfs4", "nolock,proto=tcp,addr=192.168.1.20"]
+  - ["192.168.1.20:/mnt/Storage/Data/Media", "/mnt/media", "nfs4", "nolock,proto=tcp,addr=192.168.1.20"]
+  - ["192.168.1.20:/mnt/Storage/Data/AppData", "/mnt/appdata", "nfs4", "nolock,proto=tcp,addr=192.168.1.20"]
+
+rancher:
+  console: debian
+
+  network:
+    interfaces:
+      bond0:
+        addresses:
+          - 192.168.1.1{{.HostNumber}}/24
+        gateway: 192.168.1.1
+        bond_opts:
+          downdelay: "200"
+          lacp_rate: "1"
+          miimon: "100"
+          mode: "4"
+          updelay: "200"
+          xmit_hash_policy: layer3+4
+      eth0:
+        bond: bond0
+      eth1:
+        bond: bond0
+
+  services:
+    node-exporter:
+      image: prom/node-exporter
+      command: "--path.rootfs=/host"
+      restart: always
+      ports:
+        - "9100:9100"
+      pid: host
+      volumes:
+        - "/:/host:ro,rslave"
+
+    cadvisor:
+      image: gcr.io/cadvisor/cadvisor:v0.36.0
+      restart: always
+      privileged: true
+      devices:
+        - "/dev/kmsg"
+      ports:
+        - "8100:8080"
+      volumes:
+        - "/:/rootfs:ro"
+        - "/var/run:/var/run:ro"
+        - "/sys:/sys:ro"
+        - "/var/lib/docker/:/var/lib/docker:ro"
+        - "/dev/disk/:/dev/disk:ro"
+
+runcmd:
+  - sudo apt-get update && sudo apt-get install -y git smartmontools
+  - sudo ros service enable kernel-extras && sudo ros service up kernel-extras && sudo modprobe cdc-acm
